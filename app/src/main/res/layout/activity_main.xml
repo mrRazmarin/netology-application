@@ -142,10 +142,10 @@
         android:id="@+id/viewIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/padding"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="@dimen/padding"
         android:contentDescription="@string/view_icon"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/countView"
 
         app:layout_constraintTop_toBottomOf="@id/footerBarrier"
 
@@ -157,9 +157,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
 
-        app:layout_constraintBottom_toBottomOf="@id/shareIcon"
+        app:layout_constraintBottom_toBottomOf="@id/viewIcon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/shareIcon"
+        app:layout_constraintTop_toTopOf="@id/viewIcon"
 
         tools:numeric="integer"
         tools:text="5" />
