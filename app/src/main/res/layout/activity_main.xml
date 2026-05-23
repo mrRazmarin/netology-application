@@ -5,15 +5,163 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/padding"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/imageSize"
+        android:layout_height="@dimen/imageSize"
+        android:layout_marginBottom="@dimen/padding"
+        android:contentDescription="@string/post_author_avatar"
+
+        app:layout_constraintBottom_toTopOf="@id/headerBottomBarrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        tools:src="@sample/posts_avatars" />
+
     <TextView
+        android:id="@+id/authorText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding"
+        android:singleLine="true"
+
+        app:layout_constraintBottom_toTopOf="@id/publish"
+        app:layout_constraintEnd_toStartOf="@id/burgerMenu"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="@id/avatar"
+        app:layout_constraintVertical_chainStyle="packed"
+
+        tools:text="@sample/posts.json/data/author" />
+
+    <TextView
+        android:id="@+id/publish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/name_app_greeting"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/padding"
+
+        app:layout_constraintBottom_toBottomOf="@id/avatar"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/authorText"
+
+        tools:text="@sample/posts.json/data/published" />
+
+    <ImageButton
+        android:id="@+id/burgerMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/burger_menu"
+        android:src="@drawable/more_vert"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/headerBottomBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="avatar,publish,burgerMenu" />
+
+    <TextView
+        android:id="@+id/contentText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding"
+        android:layout_marginBottom="@dimen/padding"
+        android:autoLink="web"
+        app:layout_constraintBottom_toBottomOf="@id/footerBarrier"
+
+        app:layout_constraintTop_toBottomOf="@id/headerBottomBarrier"
+
+        tools:text="@sample/posts.json/data/contentText" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/footerBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding"
+
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="contentText" />
+
+    <ImageView
+        android:id="@+id/likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/padding"
+        android:contentDescription="@string/likes"
+        app:layout_constraintTop_toBottomOf="@id/footerBarrier"
+
+        tools:src="@drawable/ic_like_heart" />
+
+    <TextView
+        android:id="@+id/countLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/likes"
+        app:layout_constraintStart_toEndOf="@id/likes"
+        app:layout_constraintTop_toTopOf="@id/likes"
+
+        tools:numeric="integer"
+        tools:text="10" />
+
+    <ImageView
+        android:id="@+id/shareIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding"
+        android:layout_marginVertical="@dimen/padding"
+        android:contentDescription="@string/share_icon"
+
+        app:layout_constraintStart_toEndOf="@id/countLikes"
+        app:layout_constraintTop_toBottomOf="@id/footerBarrier"
+
+        tools:src="@drawable/ic_share" />
+
+    <TextView
+        android:id="@+id/countShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/shareIcon"
+        app:layout_constraintStart_toEndOf="@id/shareIcon"
+        app:layout_constraintTop_toTopOf="@id/shareIcon"
+
+        tools:numeric="integer"
+        tools:text="5" />
+
+    <ImageView
+        android:id="@+id/viewIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding"
+        android:layout_marginVertical="@dimen/padding"
+        android:contentDescription="@string/view_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/footerBarrier"
+
+        tools:src="@drawable/ic_view" />
+
+    <TextView
+        android:id="@+id/countView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/shareIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/shareIcon"
+
+        tools:numeric="integer"
+        tools:text="5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
