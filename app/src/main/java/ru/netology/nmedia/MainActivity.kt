@@ -1,8 +1,6 @@
 package ru.netology.nmedia
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -43,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         completionPost(post, mainBinding)
         PostActions.actionLikes(post, mainBinding)
         PostActions.actionShare(post, mainBinding)
+        PostActions.actionViews(post, mainBinding)
     }
 
     fun completionPost(post: Post, activityBinding: ActivityMainBinding) {
