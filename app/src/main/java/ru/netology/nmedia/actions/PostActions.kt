@@ -38,8 +38,8 @@ object PostActions {
 
     fun actionViews(post: Post, activityBinding: ActivityMainBinding) {
         with(activityBinding) {
-            shareIcon.setOnClickListener {
-                countShare.text = converterCountChoice(post.countShare)
+            viewIcon.setOnClickListener {
+                countView.text = converterCountChoice(post.countViews)
             }
         }
     }
