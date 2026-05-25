@@ -1,14 +1,16 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.activity
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import ru.netology.nmedia.actions.PostActions
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.converterCountChoice
+import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,20 +30,32 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val post = Post(
-            id = 1,
-            author = "Нетология. Университет интернет-професий будущего",
-            published= "21 мая в 18:36",
-            countLike = 100,
-            likedByMe = false,
-            countShare = 100,
-            countViews = 100,
-            content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен - http://netolo.gy/fyb"
-        )
-        completionPost(post, mainBinding)
-        PostActions.actionLikes(post, mainBinding)
-        PostActions.actionShare(post, mainBinding)
-        PostActions.actionViews(post, mainBinding)
+        val postViewModel by viewModels<PostViewModel>()
+
+        postViewModel.data.observe(this) { post ->
+            completionPost(post, mainBinding)
+
+            mainBinding.likes.setImageResource(
+                if (post.likedByMe){
+                    R.drawable.ic_likes_clicked
+                }else {
+                    R.drawable.ic_like_heart
+                }
+            )
+            mainBinding.countLikes.text = converterCountChoice(post.countLike)
+            mainBinding.countShare.text = converterCountChoice(post.countShare)
+            mainBinding.countView.text = converterCountChoice(post.countViews)
+        }
+
+        mainBinding.likes.setOnClickListener {
+            postViewModel.like()
+        }
+        mainBinding.shareIcon.setOnClickListener {
+            postViewModel.share()
+        }
+        mainBinding.viewIcon.setOnClickListener {
+            postViewModel.view()
+        }
     }
 
     fun completionPost(post: Post, activityBinding: ActivityMainBinding) {
