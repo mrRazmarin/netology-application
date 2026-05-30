@@ -3,6 +3,7 @@ package ru.netology.nmedia.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.utils.AndroidUtils.dateTimeNow
 
 class PostRepositoryInMemoryImpl: PostRepository {
 
@@ -62,5 +63,32 @@ class PostRepositoryInMemoryImpl: PostRepository {
 
     override fun viewById(id: Long) {
 
+    }
+
+    override fun removePostById(id: Long) {
+        posts = posts.filter { it.id != id }
+        data.value = posts
+    }
+
+    override fun save(post: Post) {
+        if (post.id == 0L){
+            posts = listOf(post.copy(
+                author = "Mikhail Salnikov",
+                countLike = 0,
+                likedByMe = false,
+                countShare = 0,
+                countViews = 0,
+                published = dateTimeNow()
+            )) + posts
+        } else {
+            posts = posts.map {
+                if (it.id == post.id) {
+                    it.copy(content = post.content)
+                } else {
+                    it
+                }
+            }
+        }
+        data.value = posts
     }
 }
