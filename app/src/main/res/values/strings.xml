@@ -6,4 +6,8 @@
     <string name="likes" translatable="false">likes</string>
     <string name="share_icon" translatable="false">share_icon</string>
     <string name="view_icon" translatable="false">view_icon</string>
+    <string name="remove">Remove</string>
+    <string name="content">Content</string>
+    <string name="error_empty_text">Text is empty</string>
+    <string name="edit">Edit</string>
 </resources>

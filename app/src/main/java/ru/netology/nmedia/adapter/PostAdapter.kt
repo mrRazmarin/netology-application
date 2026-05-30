@@ -1,6 +1,5 @@
 package ru.netology.nmedia.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,16 +7,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.utils.completionPost
+import ru.netology.nmedia.utils.AndroidUtils.completionPost
 
-typealias LikeListener = (Post) -> Unit
-typealias ShareListener = (Post) -> Unit
-typealias ViewListener = (Post) -> Unit
+interface PostListener{
+    fun onLike(post: Post)
+    fun onShare(post: Post)
+    fun onView(post: Post)
+    fun onRemove(post: Post)
+    fun onEdit(post: Post)
+}
 
 class PostAdapter(
-    private val likeListener: LikeListener,
-    private val shareListener: ShareListener,
-    private val viewListener: ViewListener
+    private val postListener: PostListener
 ): ListAdapter<Post, PostViewHolder>(PostDiffUtilCallBack) {
 
     override fun onCreateViewHolder(
@@ -30,7 +31,9 @@ class PostAdapter(
             false
         )
 
-        return PostViewHolder(binding, likeListener, shareListener, viewListener)
+        return PostViewHolder(
+            binding, postListener
+        )
     }
 
     override fun onBindViewHolder(viewHolder: PostViewHolder, position: Int) {
@@ -41,16 +44,12 @@ class PostAdapter(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val likeListener: LikeListener,
-    private val shareListener: ShareListener,
-    private val viewListener: ViewListener
+    private val postListener: PostListener
 ): RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         completionPost(
             post = post,
-            likeListener,
-            shareListener,
-            viewListener,
+            postListener,
             cardPostBinding = binding
         )
     }

@@ -11,4 +11,8 @@ interface PostRepository {
     fun shareById(id: Long)
 
     fun viewById(id: Long)
+
+    fun removePostById(id: Long)
+
+    fun save(post: Post)
 }
