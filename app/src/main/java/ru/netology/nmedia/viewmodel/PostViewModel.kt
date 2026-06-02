@@ -7,7 +7,7 @@ import ru.netology.nmedia.repository.PostRepositoryInMemoryImpl
 
 private val emptyPost = Post()
 
-class PostViewModel: ViewModel() {
+class PostViewModel : ViewModel() {
     private val repository = PostRepositoryInMemoryImpl()
     val data = repository.getAll()
 
@@ -20,6 +20,9 @@ class PostViewModel: ViewModel() {
     fun removePostById(id: Long) = repository.removePostById(id)
 
     fun save(content: String) {
+
+
+
         edited.value?.let { post ->
             val trimmed = content.trim()
             if (trimmed != post.content) {
@@ -30,6 +33,14 @@ class PostViewModel: ViewModel() {
 
             edited.value = emptyPost
         }
+    }
+
+    fun saveAfterCreate(content: String) {
+
+    }
+
+    fun saveAfterEdit(content: String) {
+
     }
 
     fun editPostById(post: Post) {
