@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             AndroidUtils.hideKeyboard(mainBinding.inputContent)
         }
         mainBinding.btnCancel.setOnClickListener {
+            postViewModel.setEmptyPost()
             mainBinding.inputContent.clearFocus()
             mainBinding.inputContent.setText("")
             mainBinding.editsGroup.visibility = View.GONE
