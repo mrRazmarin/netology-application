@@ -7,4 +7,6 @@
     <string name="content">Текст</string>
     <string name="error_empty_text">Текст был пуст</string>
     <string name="edit">Редактировать</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
 </resources>

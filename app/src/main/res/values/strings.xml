@@ -10,4 +10,6 @@
     <string name="content">Content</string>
     <string name="error_empty_text">Text is empty</string>
     <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

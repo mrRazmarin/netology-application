@@ -7,16 +7,18 @@ import ru.netology.nmedia.utils.AndroidUtils.dateTimeNow
 
 class PostRepositoryInMemoryImpl: PostRepository {
 
+    private var nextId = 3L
+
     private var posts = listOf(
         Post(
-        id = 1,
-        author = "Нетология. Университет интернет-професий будущего",
-        published = "21 мая в 18:36",
-        countLike = 100,
-        likedByMe = false,
-        countShare = 100,
-        countViews = 1_900,
-        content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен - http://netolo.gy/fyb"
+            id = 1,
+            author = "Нетология. Университет интернет-професий будущего",
+            published = "21 мая в 18:36",
+            countLike = 100,
+            likedByMe = false,
+            countShare = 100,
+            countViews = 1_900,
+            content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен - http://netolo.gy/fyb"
         ),
         Post(
             id = 2,
@@ -73,6 +75,7 @@ class PostRepositoryInMemoryImpl: PostRepository {
     override fun save(post: Post) {
         if (post.id == 0L){
             posts = listOf(post.copy(
+                id = nextId++,
                 author = "Mikhail Salnikov",
                 countLike = 0,
                 likedByMe = false,

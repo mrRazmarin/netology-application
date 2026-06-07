@@ -7,7 +7,7 @@ import ru.netology.nmedia.repository.PostRepositoryInMemoryImpl
 
 private val emptyPost = Post()
 
-class PostViewModel: ViewModel() {
+class PostViewModel : ViewModel() {
     private val repository = PostRepositoryInMemoryImpl()
     val data = repository.getAll()
 
@@ -17,6 +17,9 @@ class PostViewModel: ViewModel() {
     fun shareById(id: Long) = repository.shareById(id)
     fun viewById(id: Long) = repository.viewById(id)
 
+    fun setEmptyPost() {
+        edited.value = emptyPost
+    }
     fun removePostById(id: Long) = repository.removePostById(id)
 
     fun save(content: String) {

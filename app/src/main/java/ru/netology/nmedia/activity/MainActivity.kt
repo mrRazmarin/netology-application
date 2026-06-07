@@ -1,6 +1,7 @@
 package ru.netology.nmedia.activity
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val postViewModel: PostViewModel by viewModels()
-        val adapter = PostAdapter (object : PostListener{
+        val adapter = PostAdapter(object : PostListener {
             override fun onLike(post: Post) {
                 postViewModel.likeById(post.id)
             }
@@ -72,18 +73,50 @@ class MainActivity : AppCompatActivity() {
         postViewModel.edited.observe(this) { edited ->
             if (edited.id != 0L) {
                 mainBinding.inputContent.setText(edited.content)
+                mainBinding.editsGroup.visibility = View.VISIBLE
+                mainBinding.addButton.visibility = View.GONE
                 AndroidUtils.showKeyboard(mainBinding.inputContent)
             }
+        }
+
+        mainBinding.btnSave.setOnClickListener {
+            val content = mainBinding.inputContent.text?.toString()
+
+            if (content.isNullOrBlank()) {
+                Toast.makeText(
+                    this,
+                    getText(R.string.error_empty_text),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            postViewModel.save(content)
+
+            mainBinding.inputContent.clearFocus()
+            mainBinding.inputContent.setText("")
+            mainBinding.editsGroup.visibility = View.GONE
+            mainBinding.addButton.visibility = View.VISIBLE
+            AndroidUtils.hideKeyboard(mainBinding.inputContent)
+        }
+        mainBinding.btnCancel.setOnClickListener {
+            postViewModel.setEmptyPost()
+            mainBinding.inputContent.clearFocus()
+            mainBinding.inputContent.setText("")
+            mainBinding.editsGroup.visibility = View.GONE
+            mainBinding.addButton.visibility = View.VISIBLE
+            AndroidUtils.hideKeyboard(mainBinding.inputContent)
         }
 
         mainBinding.addButton.setOnClickListener {
             val content = mainBinding.inputContent.text?.toString()
 
-            if (content.isNullOrBlank()){
+            if (content.isNullOrBlank()) {
                 Toast.makeText(
                     this,
                     getText(R.string.error_empty_text),
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
