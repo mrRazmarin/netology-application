@@ -32,11 +32,17 @@
         app:layout_constraintEnd_toStartOf="@id/addButton"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Material3.Button.IconButton"
         android:id="@+id/addButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/baseline_add_24"
+        app:icon="@drawable/baseline_add_24"
+        app:iconTint="@color/ic_addbutton_color"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
         app:layout_constraintBottom_toBottomOf="@id/inputContent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/inputContent" />
@@ -45,27 +51,40 @@
         android:id="@+id/editsGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="btnCancel,btnSave"
-        />
+        android:visibility="visible"
+        app:constraint_referenced_ids="btnCancel,btnSave" />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSave"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:icon="@drawable/baseline_save_as_24"
         app:layout_constraintBottom_toBottomOf="@id/btnCancel"
         app:layout_constraintEnd_toStartOf="@id/btnCancel"
         app:layout_constraintTop_toTopOf="@id/btnCancel"
-        tools:text="Save"
-        android:src="@drawable/baseline_save_as_24"/>
+        app:iconTint="@color/ic_btnsave_color"
+        tools:text="Save" />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCancel"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:icon="@drawable/baseline_cancel_24"
+        app:iconTint="@color/ic_btncancel_color"
         app:layout_constraintBottom_toTopOf="@id/inputContent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Cancel"
-        android:src="@drawable/baseline_cancel_24"/>
+
+
+        tools:text="Cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

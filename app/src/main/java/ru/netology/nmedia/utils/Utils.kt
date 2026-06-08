@@ -18,9 +18,9 @@ object AndroidUtils {
     fun converterCountChoice(count: Long): String {
         return when {
             count >= 1_000_000 -> convertMillions(count)
-            count >= 10_000    -> "${count / 1_000}K"
-            count >= 1_000     -> convertThousands(count)
-            else               -> count.toString()
+            count >= 10_000 -> "${count / 1_000}K"
+            count >= 1_000 -> convertThousands(count)
+            else -> count.toString()
         }
     }
 
@@ -56,35 +56,32 @@ object AndroidUtils {
             authorText.text = post.author
             publish.text = post.published
             contentText.text = post.content
-            countLikes.text = converterCountChoice(post.countLike)
-            countShare.text = converterCountChoice(post.countShare)
-            countView.text = converterCountChoice(post.countViews)
 
-            likes.setImageResource(
-                if (post.likedByMe){
-                    R.drawable.ic_likes_clicked
-                } else {
-                    R.drawable.ic_like_heart
-                }
-            )
+            likes.isChecked = post.likedByMe
+            likes.text = converterCountChoice(post.countLike)
+
+            shareIcon.text = converterCountChoice(post.countShare)
+
+            viewIcon.text = converterCountChoice(post.countViews)
+
             avatar.setImageResource(R.drawable.ic_post_avatar_drawable)
-            shareIcon.setImageResource(R.drawable.ic_share)
-            viewIcon.setImageResource(R.drawable.ic_view)
 
             burgerMenu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.post_menu)
 
                     setOnMenuItemClickListener { item ->
-                        when(item.itemId) {
+                        when (item.itemId) {
                             R.id.remove -> {
                                 listener.onRemove(post)
                                 true
                             }
+
                             R.id.edit -> {
                                 listener.onEdit(post)
                                 true
                             }
+
                             else -> false
                         }
                     }
@@ -113,7 +110,8 @@ object AndroidUtils {
         if (view.hasWindowFocus()) {
             showKeyboardNow(view)
         } else {
-            view.viewTreeObserver.addOnWindowFocusChangeListener(object : ViewTreeObserver.OnWindowFocusChangeListener{
+            view.viewTreeObserver.addOnWindowFocusChangeListener(object :
+                ViewTreeObserver.OnWindowFocusChangeListener {
                 override fun onWindowFocusChanged(hasFocus: Boolean) {
                     if (hasFocus) {
                         showKeyboardNow(view)

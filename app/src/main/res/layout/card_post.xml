@@ -87,79 +87,67 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="contentText" />
 
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/likes"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/padding"
+        android:button="@drawable/ic_like_selector"
+        android:checkable="true"
         android:contentDescription="@string/likes"
-        app:layout_constraintTop_toBottomOf="@id/footerBarrier"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="@string/_100"
+        app:icon="@drawable/ic_like_selector"
+        app:iconTint="@color/like_selector"
 
-        tools:src="@drawable/ic_like_heart" />
+        app:layout_constraintTop_toBottomOf="@id/footerBarrier" />
 
-    <TextView
-        android:id="@+id/countLikes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-
-        app:layout_constraintBottom_toBottomOf="@id/likes"
-        app:layout_constraintStart_toEndOf="@id/likes"
-        app:layout_constraintTop_toTopOf="@id/likes"
-
-        tools:numeric="integer"
-        tools:text="10" />
-
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/shareIcon"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/padding"
         android:layout_marginVertical="@dimen/padding"
+
+        android:clickable="false"
         android:contentDescription="@string/share_icon"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="@string/_100"
+        android:textColor="@android:color/black"
 
-        app:layout_constraintStart_toEndOf="@id/countLikes"
-        app:layout_constraintTop_toBottomOf="@id/footerBarrier"
+        app:icon="@drawable/ic_share"
+        app:iconTint="@color/ic_share_color"
+        app:layout_constraintStart_toEndOf="@id/likes"
+        app:layout_constraintTop_toBottomOf="@id/footerBarrier" />
 
-        tools:src="@drawable/ic_share" />
-
-    <TextView
-        android:id="@+id/countShare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-
-        app:layout_constraintBottom_toBottomOf="@id/shareIcon"
-        app:layout_constraintStart_toEndOf="@id/shareIcon"
-        app:layout_constraintTop_toTopOf="@id/shareIcon"
-
-        tools:numeric="integer"
-        tools:text="5" />
-
-    <ImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/viewIcon"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="@dimen/padding"
+        android:clickable="false"
         android:contentDescription="@string/view_icon"
-        app:layout_constraintEnd_toStartOf="@id/countView"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:textColor="@android:color/black"
 
-        app:layout_constraintTop_toBottomOf="@id/footerBarrier"
+        android:text="@string/_100"
 
-        tools:src="@drawable/ic_view" />
-
-    <TextView
-        android:id="@+id/countView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-
-        app:layout_constraintBottom_toBottomOf="@id/viewIcon"
+        app:icon="@drawable/ic_view"
+        app:iconTint="@color/ic_view_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/viewIcon"
-
-        tools:numeric="integer"
-        tools:text="5" />
+        app:layout_constraintTop_toBottomOf="@id/footerBarrier" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
