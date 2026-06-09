@@ -72,16 +72,14 @@ object AndroidUtils {
 
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
-                            R.id.remove -> {
-                                listener.onRemove(post)
-                                true
-                            }
-
                             R.id.edit -> {
                                 listener.onEdit(post)
                                 true
                             }
-
+                            R.id.remove -> {
+                                listener.onRemove(post)
+                                true
+                            }
                             else -> false
                         }
                     }

@@ -46,13 +46,19 @@
 
         tools:text="@sample/posts.json/data/published" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/burgerMenu"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:contentDescription="@string/burger_menu"
-        android:src="@drawable/more_vert"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:icon="@drawable/more_vert"
+        app:iconTint="@color/ic_burger_menu_color"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -141,9 +147,9 @@
         android:insetBottom="0dp"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:textColor="@android:color/black"
-
         android:text="@string/_100"
+
+        android:textColor="@android:color/black"
 
         app:icon="@drawable/ic_view"
         app:iconTint="@color/ic_view_color"
