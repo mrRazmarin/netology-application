@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        val postViewModel: PostViewModel by viewModels()
+        val adapter = PostAdapter(createPostListener(postViewModel))
 
         val originalPadding = intArrayOf(
             mainBinding.main.paddingLeft,
@@ -41,48 +43,35 @@ class MainActivity : AppCompatActivity() {
             WindowInsetsCompat.CONSUMED
         }
 
-        val postViewModel: PostViewModel by viewModels()
-        val adapter = PostAdapter(createPostListener(postViewModel))
         mainBinding.list.adapter = adapter
 
-        postViewModel.data.observe(this) { posts ->
+        setupObserve(
+            viewModel = postViewModel,
+            binding = mainBinding,
+            adapter = adapter
+        )
+
+        setupClickListeners(
+            binding = mainBinding,
+            viewModel = postViewModel
+        )
+    }
+
+    private fun setupObserve(
+        viewModel: PostViewModel,
+        binding: ActivityMainBinding,
+        adapter: PostAdapter
+    ) {
+        viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
 
-        postViewModel.edited.observe(this) { edited ->
+        viewModel.edited.observe(this) { edited ->
             if (edited.id != 0L) {
-                mainBinding.inputContent.setText(edited.content)
-                mainBinding.showEditMode()
-                AndroidUtils.showKeyboard(mainBinding.inputContent)
+                binding.inputContent.setText(edited.content)
+                binding.showEditMode()
+                AndroidUtils.showKeyboard(binding.inputContent)
             }
-        }
-
-        mainBinding.btnSave.setOnClickListener {
-            savePost(
-                binding = mainBinding,
-                viewModel = postViewModel
-            )
-
-            mainBinding.clearInput()
-            mainBinding.showCreateMode()
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
-        }
-        mainBinding.btnCancel.setOnClickListener {
-            postViewModel.setEmptyPost()
-
-            mainBinding.clearInput()
-            mainBinding.showCreateMode()
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
-        }
-
-        mainBinding.addButton.setOnClickListener {
-            savePost(
-                binding = mainBinding,
-                viewModel = postViewModel
-            )
-
-            mainBinding.clearInput()
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
         }
     }
 
@@ -142,5 +131,39 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.save(content)
         AndroidUtils.hideKeyboard(binding.inputContent)
+    }
+
+    private fun setupClickListeners(
+        binding: ActivityMainBinding,
+        viewModel: PostViewModel
+    ) {
+        binding.btnSave.setOnClickListener {
+            savePost(
+                binding,
+                viewModel
+            )
+
+            binding.clearInput()
+            binding.showCreateMode()
+            AndroidUtils.hideKeyboard(binding.inputContent)
+        }
+
+        binding.btnCancel.setOnClickListener {
+            viewModel.setEmptyPost()
+
+            binding.clearInput()
+            binding.showCreateMode()
+            AndroidUtils.hideKeyboard(binding.inputContent)
+        }
+
+        binding.addButton.setOnClickListener {
+            savePost(
+                binding,
+                viewModel
+            )
+
+            binding.clearInput()
+            AndroidUtils.hideKeyboard(binding.inputContent)
+        }
     }
 }
