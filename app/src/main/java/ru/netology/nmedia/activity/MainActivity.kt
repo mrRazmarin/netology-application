@@ -42,7 +42,52 @@ class MainActivity : AppCompatActivity() {
         }
 
         val postViewModel: PostViewModel by viewModels()
-        val adapter = PostAdapter(object : PostListener {
+        val adapter = PostAdapter(createPostListener(postViewModel))
+        mainBinding.list.adapter = adapter
+
+        postViewModel.data.observe(this) { posts ->
+            adapter.submitList(posts)
+        }
+
+        postViewModel.edited.observe(this) { edited ->
+            if (edited.id != 0L) {
+                mainBinding.inputContent.setText(edited.content)
+                mainBinding.showEditMode()
+                AndroidUtils.showKeyboard(mainBinding.inputContent)
+            }
+        }
+
+        mainBinding.btnSave.setOnClickListener {
+            savePost(
+                binding = mainBinding,
+                viewModel = postViewModel
+            )
+
+            mainBinding.clearInput()
+            mainBinding.showCreateMode()
+            AndroidUtils.hideKeyboard(mainBinding.inputContent)
+        }
+        mainBinding.btnCancel.setOnClickListener {
+            postViewModel.setEmptyPost()
+
+            mainBinding.clearInput()
+            mainBinding.showCreateMode()
+            AndroidUtils.hideKeyboard(mainBinding.inputContent)
+        }
+
+        mainBinding.addButton.setOnClickListener {
+            savePost(
+                binding = mainBinding,
+                viewModel = postViewModel
+            )
+
+            mainBinding.clearInput()
+            AndroidUtils.hideKeyboard(mainBinding.inputContent)
+        }
+    }
+
+    private fun createPostListener(postViewModel: PostViewModel): PostListener  {
+        return object : PostListener {
             override fun onLike(post: Post) {
                 postViewModel.likeById(post.id)
             }
@@ -63,68 +108,39 @@ class MainActivity : AppCompatActivity() {
                 postViewModel.editPostById(post)
             }
 
-        })
-        mainBinding.list.adapter = adapter
+        }
+    }
 
-        postViewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+    private fun ActivityMainBinding.clearInput() {
+        inputContent.clearFocus()
+        inputContent.setText("")
+    }
+
+    private fun ActivityMainBinding.showCreateMode() {
+        editsGroup.visibility = View.GONE
+        addButton.visibility = View.VISIBLE
+    }
+
+    private fun ActivityMainBinding.showEditMode() {
+        editsGroup.visibility = View.VISIBLE
+        addButton.visibility = View.GONE
+    }
+
+    private fun savePost(
+        binding: ActivityMainBinding,
+        viewModel: PostViewModel
+    ) {
+        val content = binding.inputContent.text?.toString()
+        if (content.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                getText(R.string.error_empty_text),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
         }
 
-        postViewModel.edited.observe(this) { edited ->
-            if (edited.id != 0L) {
-                mainBinding.inputContent.setText(edited.content)
-                mainBinding.editsGroup.visibility = View.VISIBLE
-                mainBinding.addButton.visibility = View.GONE
-                AndroidUtils.showKeyboard(mainBinding.inputContent)
-            }
-        }
-
-        mainBinding.btnSave.setOnClickListener {
-            val content = mainBinding.inputContent.text?.toString()
-
-            if (content.isNullOrBlank()) {
-                Toast.makeText(
-                    this,
-                    getText(R.string.error_empty_text),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            postViewModel.save(content)
-
-            mainBinding.inputContent.clearFocus()
-            mainBinding.inputContent.setText("")
-            mainBinding.editsGroup.visibility = View.GONE
-            mainBinding.addButton.visibility = View.VISIBLE
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
-        }
-        mainBinding.btnCancel.setOnClickListener {
-            postViewModel.setEmptyPost()
-            mainBinding.inputContent.clearFocus()
-            mainBinding.inputContent.setText("")
-            mainBinding.editsGroup.visibility = View.GONE
-            mainBinding.addButton.visibility = View.VISIBLE
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
-        }
-
-        mainBinding.addButton.setOnClickListener {
-            val content = mainBinding.inputContent.text?.toString()
-
-            if (content.isNullOrBlank()) {
-                Toast.makeText(
-                    this,
-                    getText(R.string.error_empty_text),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            postViewModel.save(content)
-            mainBinding.inputContent.clearFocus()
-            mainBinding.inputContent.setText("")
-
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
-        }
+        viewModel.save(content)
+        AndroidUtils.hideKeyboard(binding.inputContent)
     }
 }
