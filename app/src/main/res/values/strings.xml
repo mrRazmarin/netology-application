@@ -13,4 +13,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="_100" translatable="false">100</string>
+    <string name="chooser_share_post" translatable="false">Share post</string>
+    <string name="desc_post_save">Description post save</string>
+    <string name="desc_cancel">Description cancel new post or old post</string>
 </resources>

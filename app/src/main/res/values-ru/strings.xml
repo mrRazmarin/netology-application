@@ -9,4 +9,6 @@
     <string name="edit">Редактировать</string>
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
+    <string name="desc_post_save">Сохранение поста</string>
+    <string name="desc_cancel">Кнопка отмены</string>
 </resources>
