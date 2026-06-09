@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        val postViewModel: PostViewModel by viewModels()
+        val adapter = PostAdapter(createPostListener(postViewModel))
 
         val originalPadding = intArrayOf(
             mainBinding.main.paddingLeft,
@@ -41,8 +43,40 @@ class MainActivity : AppCompatActivity() {
             WindowInsetsCompat.CONSUMED
         }
 
-        val postViewModel: PostViewModel by viewModels()
-        val adapter = PostAdapter(object : PostListener {
+        mainBinding.list.adapter = adapter
+
+        setupObserve(
+            viewModel = postViewModel,
+            binding = mainBinding,
+            adapter = adapter
+        )
+
+        setupClickListeners(
+            binding = mainBinding,
+            viewModel = postViewModel
+        )
+    }
+
+    private fun setupObserve(
+        viewModel: PostViewModel,
+        binding: ActivityMainBinding,
+        adapter: PostAdapter
+    ) {
+        viewModel.data.observe(this) { posts ->
+            adapter.submitList(posts)
+        }
+
+        viewModel.edited.observe(this) { edited ->
+            if (edited.id != 0L) {
+                binding.inputContent.setText(edited.content)
+                binding.showEditMode()
+                AndroidUtils.showKeyboard(binding.inputContent)
+            }
+        }
+    }
+
+    private fun createPostListener(postViewModel: PostViewModel): PostListener  {
+        return object : PostListener {
             override fun onLike(post: Post) {
                 postViewModel.likeById(post.id)
             }
@@ -63,68 +97,73 @@ class MainActivity : AppCompatActivity() {
                 postViewModel.editPostById(post)
             }
 
-        })
-        mainBinding.list.adapter = adapter
+        }
+    }
 
-        postViewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+    private fun ActivityMainBinding.clearInput() {
+        inputContent.clearFocus()
+        inputContent.setText("")
+    }
+
+    private fun ActivityMainBinding.showCreateMode() {
+        editsGroup.visibility = View.GONE
+        addButton.visibility = View.VISIBLE
+    }
+
+    private fun ActivityMainBinding.showEditMode() {
+        editsGroup.visibility = View.VISIBLE
+        addButton.visibility = View.GONE
+    }
+
+    private fun savePost(
+        binding: ActivityMainBinding,
+        viewModel: PostViewModel
+    ) {
+        val content = binding.inputContent.text?.toString()
+        if (content.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                getText(R.string.error_empty_text),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
         }
 
-        postViewModel.edited.observe(this) { edited ->
-            if (edited.id != 0L) {
-                mainBinding.inputContent.setText(edited.content)
-                mainBinding.editsGroup.visibility = View.VISIBLE
-                mainBinding.addButton.visibility = View.GONE
-                AndroidUtils.showKeyboard(mainBinding.inputContent)
-            }
+        viewModel.save(content)
+        AndroidUtils.hideKeyboard(binding.inputContent)
+    }
+
+    private fun setupClickListeners(
+        binding: ActivityMainBinding,
+        viewModel: PostViewModel
+    ) {
+        binding.btnSave.setOnClickListener {
+            savePost(
+                binding,
+                viewModel
+            )
+
+            binding.clearInput()
+            binding.showCreateMode()
+            AndroidUtils.hideKeyboard(binding.inputContent)
         }
 
-        mainBinding.btnSave.setOnClickListener {
-            val content = mainBinding.inputContent.text?.toString()
+        binding.btnCancel.setOnClickListener {
+            viewModel.setEmptyPost()
 
-            if (content.isNullOrBlank()) {
-                Toast.makeText(
-                    this,
-                    getText(R.string.error_empty_text),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            postViewModel.save(content)
-
-            mainBinding.inputContent.clearFocus()
-            mainBinding.inputContent.setText("")
-            mainBinding.editsGroup.visibility = View.GONE
-            mainBinding.addButton.visibility = View.VISIBLE
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
-        }
-        mainBinding.btnCancel.setOnClickListener {
-            postViewModel.setEmptyPost()
-            mainBinding.inputContent.clearFocus()
-            mainBinding.inputContent.setText("")
-            mainBinding.editsGroup.visibility = View.GONE
-            mainBinding.addButton.visibility = View.VISIBLE
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
+            binding.clearInput()
+            binding.showCreateMode()
+            AndroidUtils.hideKeyboard(binding.inputContent)
         }
 
-        mainBinding.addButton.setOnClickListener {
-            val content = mainBinding.inputContent.text?.toString()
+        binding.addButton.setOnClickListener {
+            savePost(
+                binding,
+                viewModel
+            )
 
-            if (content.isNullOrBlank()) {
-                Toast.makeText(
-                    this,
-                    getText(R.string.error_empty_text),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            postViewModel.save(content)
-            mainBinding.inputContent.clearFocus()
-            mainBinding.inputContent.setText("")
-
-            AndroidUtils.hideKeyboard(mainBinding.inputContent)
+            binding.clearInput()
+            AndroidUtils.hideKeyboard(binding.inputContent)
         }
     }
 }

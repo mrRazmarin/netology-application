@@ -12,4 +12,5 @@
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="_100" translatable="false">100</string>
 </resources>
