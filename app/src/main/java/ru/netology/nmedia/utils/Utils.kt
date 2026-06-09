@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.viewbinding.ViewBinding
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostListener
 import ru.netology.nmedia.databinding.CardPostBinding
@@ -125,5 +128,23 @@ object AndroidUtils {
 
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun View.applySystemBarsPadding() {
+        val originalPaddingLeft = paddingLeft
+        val originalPaddingTop = paddingTop
+        val originalPaddingRight = paddingRight
+        val originalPaddingBottom = paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                originalPaddingLeft + systemBars.left,
+                originalPaddingTop + systemBars.top,
+                originalPaddingRight + systemBars.right,
+                originalPaddingBottom + systemBars.bottom
+            )
+            WindowInsetsCompat.CONSUMED
+        }
     }
 }

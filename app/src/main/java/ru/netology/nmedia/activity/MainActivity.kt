@@ -1,19 +1,17 @@
 package ru.netology.nmedia.activity
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.adapter.PostListener
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.utils.AndroidUtils
+import ru.netology.nmedia.utils.AndroidUtils.applySystemBarsPadding
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -22,38 +20,25 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         val mainBinding = ActivityMainBinding.inflate(layoutInflater)
         val postViewModel: PostViewModel by viewModels()
+        val postContract = registerForActivityResult(NewPostContract) {
+            result ->
+            postViewModel.save(result)
+        }
         val adapter = PostAdapter(createPostListener(postViewModel))
 
-        val originalPadding = intArrayOf(
-            mainBinding.main.paddingLeft,
-            mainBinding.main.paddingTop,
-            mainBinding.main.paddingRight,
-            mainBinding.main.paddingBottom
-        )
-
         setContentView(mainBinding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(mainBinding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(
-                originalPadding[0] + systemBars.left,
-                originalPadding[1] + systemBars.top,
-                originalPadding[2] + systemBars.right,
-                originalPadding[3] + systemBars.bottom
-            )
-            WindowInsetsCompat.CONSUMED
-        }
+        mainBinding.main.applySystemBarsPadding()
 
         mainBinding.list.adapter = adapter
+
+        mainBinding.add.setOnClickListener {
+            postContract.launch()
+        }
 
         setupObserve(
             viewModel = postViewModel,
             binding = mainBinding,
             adapter = adapter
-        )
-
-        setupClickListeners(
-            binding = mainBinding,
-            viewModel = postViewModel
         )
     }
 
@@ -65,14 +50,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
-
-        viewModel.edited.observe(this) { edited ->
-            if (edited.id != 0L) {
-                binding.inputContent.setText(edited.content)
-                binding.showEditMode()
-                AndroidUtils.showKeyboard(binding.inputContent)
-            }
-        }
     }
 
     private fun createPostListener(postViewModel: PostViewModel): PostListener  {
@@ -82,7 +59,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onShare(post: Post) {
-                postViewModel.shareById(post.id)
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    intent.type = "type/plain"
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                }
+
+                val chooser = Intent.createChooser(intent, getString(R.string.chooser_share_post))
+
+                startActivity(chooser)
             }
 
             override fun onView(post: Post) {
@@ -96,74 +81,6 @@ class MainActivity : AppCompatActivity() {
             override fun onEdit(post: Post) {
                 postViewModel.editPostById(post)
             }
-
-        }
-    }
-
-    private fun ActivityMainBinding.clearInput() {
-        inputContent.clearFocus()
-        inputContent.setText("")
-    }
-
-    private fun ActivityMainBinding.showCreateMode() {
-        editsGroup.visibility = View.GONE
-        addButton.visibility = View.VISIBLE
-    }
-
-    private fun ActivityMainBinding.showEditMode() {
-        editsGroup.visibility = View.VISIBLE
-        addButton.visibility = View.GONE
-    }
-
-    private fun savePost(
-        binding: ActivityMainBinding,
-        viewModel: PostViewModel
-    ) {
-        val content = binding.inputContent.text?.toString()
-        if (content.isNullOrBlank()) {
-            Toast.makeText(
-                this,
-                getText(R.string.error_empty_text),
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-
-        viewModel.save(content)
-        AndroidUtils.hideKeyboard(binding.inputContent)
-    }
-
-    private fun setupClickListeners(
-        binding: ActivityMainBinding,
-        viewModel: PostViewModel
-    ) {
-        binding.btnSave.setOnClickListener {
-            savePost(
-                binding,
-                viewModel
-            )
-
-            binding.clearInput()
-            binding.showCreateMode()
-            AndroidUtils.hideKeyboard(binding.inputContent)
-        }
-
-        binding.btnCancel.setOnClickListener {
-            viewModel.setEmptyPost()
-
-            binding.clearInput()
-            binding.showCreateMode()
-            AndroidUtils.hideKeyboard(binding.inputContent)
-        }
-
-        binding.addButton.setOnClickListener {
-            savePost(
-                binding,
-                viewModel
-            )
-
-            binding.clearInput()
-            AndroidUtils.hideKeyboard(binding.inputContent)
         }
     }
 }
