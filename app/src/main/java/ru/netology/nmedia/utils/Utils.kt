@@ -1,12 +1,14 @@
 package ru.netology.nmedia.utils
 
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostListener
@@ -89,6 +91,15 @@ object AndroidUtils {
                 }.show()
             }
 
+            if (!post.video.isBlank()){
+                this.preview.visibility = View.VISIBLE
+            } else {
+                this.preview.visibility = View.GONE
+            }
+
+            this.preview.setOnClickListener {
+                listener.onVideo(post)
+            }
             this.likes.setOnClickListener {
                 listener.onLike(post)
             }
