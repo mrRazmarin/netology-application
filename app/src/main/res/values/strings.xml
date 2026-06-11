@@ -16,4 +16,5 @@
     <string name="chooser_share_post" translatable="false">Share post</string>
     <string name="desc_post_save">Description post save</string>
     <string name="desc_cancel">Description cancel new post or old post</string>
+    <string name="description_burger_menu" translatable="false">Description burger menu</string>
 </resources>

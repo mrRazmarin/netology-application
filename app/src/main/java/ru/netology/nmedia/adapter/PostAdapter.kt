@@ -1,5 +1,6 @@
 package ru.netology.nmedia.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -22,6 +23,7 @@ interface PostListener{
     fun onView(post: Post)
     fun onRemove(post: Post)
     fun onEdit(post: Post)
+    fun onVideo(post: Post)
 }
 
 /**

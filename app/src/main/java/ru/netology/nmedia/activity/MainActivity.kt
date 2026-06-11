@@ -1,11 +1,14 @@
 package ru.netology.nmedia.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.adapter.PostListener
@@ -15,15 +18,19 @@ import ru.netology.nmedia.utils.AndroidUtils.applySystemBarsPadding
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
+    private val postViewModel: PostViewModel by viewModels()
+    private val editContract = registerForActivityResult(EditPostContract) { editResult ->
+        postViewModel.save(editResult)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val mainBinding = ActivityMainBinding.inflate(layoutInflater)
-        val postViewModel: PostViewModel by viewModels()
-        val postContract = registerForActivityResult(NewPostContract) {
-            result ->
+        val postContract = registerForActivityResult(NewPostContract) { result ->
             postViewModel.save(result)
         }
+
         val adapter = PostAdapter(createPostListener(postViewModel))
 
         setContentView(mainBinding.root)
@@ -52,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createPostListener(postViewModel: PostViewModel): PostListener  {
+    private fun createPostListener(postViewModel: PostViewModel): PostListener {
         return object : PostListener {
             override fun onLike(post: Post) {
                 postViewModel.likeById(post.id)
@@ -80,6 +87,24 @@ class MainActivity : AppCompatActivity() {
 
             override fun onEdit(post: Post) {
                 postViewModel.editPostById(post)
+                val postContent = post.content
+
+                editContract.launch(postContent)
+            }
+
+            override fun onVideo(post: Post) {
+                val url = post.video
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    url.trim().toUri()
+                )
+                if (intent.resolveActivity(packageManager) != null){
+                    Log.e("Check exists browser", "Browser exist!")
+                    startActivity(intent)
+                } else {
+                    Log.e("Check exists browser", "Browser not found!")
+                    Log.i("Field post.video", url)
+                }
             }
         }
     }

@@ -71,18 +71,38 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="avatar,publish,burgerMenu" />
 
-    <TextView
-        android:id="@+id/contentText"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/textAndVideo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding"
-        android:layout_marginBottom="@dimen/padding"
-        android:autoLink="web"
         app:layout_constraintBottom_toBottomOf="@id/footerBarrier"
 
-        app:layout_constraintTop_toBottomOf="@id/headerBottomBarrier"
+        app:layout_constraintTop_toBottomOf="@id/headerBottomBarrier">
 
-        tools:text="@sample/posts.json/data/contentText" />
+        <TextView
+            android:id="@+id/contentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding"
+            android:layout_marginBottom="@dimen/padding"
+            android:autoLink="web"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="@sample/posts.json/data/contentText" />
+
+        <ImageButton
+            android:id="@+id/preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/im_play"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/footerBarrier"
@@ -91,7 +111,7 @@
         android:paddingBottom="@dimen/padding"
 
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="contentText" />
+        app:constraint_referenced_ids="textAndVideo" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/likes"
