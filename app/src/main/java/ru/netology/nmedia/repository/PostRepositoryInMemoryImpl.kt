@@ -1,9 +1,12 @@
+/*
 package ru.netology.nmedia.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.dateTimeNow
+
+
 
 class PostRepositoryInMemoryImpl: PostRepository {
 
@@ -33,7 +36,10 @@ class PostRepositoryInMemoryImpl: PostRepository {
         )
     )
 
-    private val data = MutableLiveData(posts)
+
+
+
+private val data = MutableLiveData(posts)
 
     override fun getAll(): LiveData<List<Post>> = data
 
@@ -95,4 +101,9 @@ class PostRepositoryInMemoryImpl: PostRepository {
         }
         data.value = posts
     }
+
+
+
 }
+
+*/
