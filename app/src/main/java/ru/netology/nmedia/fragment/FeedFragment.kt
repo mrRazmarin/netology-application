@@ -1,56 +1,57 @@
-package ru.netology.nmedia.activity
+package ru.netology.nmedia.fragment
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.launch
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.adapter.PostListener
-import ru.netology.nmedia.databinding.ActivityMainBinding
+import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.applySystemBarsPadding
 import ru.netology.nmedia.viewmodel.PostViewModel
 
-class MainActivity : AppCompatActivity() {
-    private val postViewModel: PostViewModel by viewModels()
-    private val editContract = registerForActivityResult(EditPostContract) { editResult ->
-        postViewModel.save(editResult)
-    }
-    val postContract = registerForActivityResult(NewPostContract) { result ->
-        postViewModel.save(result)
-    }
+class FeedFragment : Fragment() {
+    private val postViewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    val packageManager: PackageManager by lazy { requireActivity().packageManager }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        val mainBinding = ActivityMainBinding.inflate(layoutInflater)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val bindingView = FragmentFeedBinding.inflate(inflater, container, false)
+
         val adapter = PostAdapter(createPostListener(postViewModel))
+        bindingView.main.applySystemBarsPadding()
 
-        setContentView(mainBinding.root)
-        mainBinding.main.applySystemBarsPadding()
-
-        mainBinding.list.adapter = adapter
-
-        mainBinding.add.setOnClickListener {
-            postContract.launch()
-        }
+        bindingView.list.adapter = adapter
 
         setupObserve(
             viewModel = postViewModel,
             adapter = adapter
         )
+
+        bindingView.add.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+        }
+
+        return bindingView.root
     }
 
     private fun setupObserve(
         viewModel: PostViewModel,
         adapter: PostAdapter
     ) {
-        viewModel.data.observe(this) { posts ->
+        viewModel.data.observe(viewLifecycleOwner) { posts ->
             adapter.submitList(posts)
         }
     }
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             override fun onShare(post: Post) {
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    intent.type = "type/plain"
+                    type = "type/plain"
                     putExtra(Intent.EXTRA_TEXT, post.content)
                 }
 
@@ -83,9 +84,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onEdit(post: Post) {
                 postViewModel.editPostById(post)
-                val postContent = post.content
-
-                editContract.launch(postContent)
+                findNavController().navigate(R.id.action_feedFragment_to_editPostFragment)
             }
 
             override fun onVideo(post: Post) {
