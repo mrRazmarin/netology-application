@@ -19,8 +19,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     @Deprecated("Не используется")
     fun shareById(id: Long) = repository.shareById(id)
     fun viewById(id: Long) = repository.viewById(id)
-
-    @Deprecated("Не используется")
     fun setEmptyPost() {
         edited.value = emptyPost
     }

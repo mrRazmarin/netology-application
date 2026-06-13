@@ -12,17 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Netologyapplication">
         <activity
-            android:name=".activity.MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.IntentHandlerActivity"
+            android:name=".activity.AppActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -31,15 +21,12 @@
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.NewPostActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activity.EditPostActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
     </application>
     <queries>
         <intent>

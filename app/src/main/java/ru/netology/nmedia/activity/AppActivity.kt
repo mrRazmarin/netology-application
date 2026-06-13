@@ -4,19 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.ActivityIntentHandlerBinding
+import ru.netology.nmedia.databinding.ActivityAppBinding
+import ru.netology.nmedia.fragment.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.utils.AndroidUtils.applySystemBarsPadding
 
-class IntentHandlerActivity : AppCompatActivity() {
+class AppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val binding = ActivityIntentHandlerBinding.inflate(layoutInflater)
+        val binding = ActivityAppBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        binding.main.applySystemBarsPadding()
+        binding.root.applySystemBarsPadding()
 
         intent?.let {
             if (it.action != Intent.ACTION_SEND)
@@ -29,6 +31,12 @@ class IntentHandlerActivity : AppCompatActivity() {
                         finish()
                     }.show()
             }
+            findNavController(R.id.main).navigate(
+                R.id.action_feedFragment_to_newPostFragment,
+                Bundle().apply {
+                    textArg = text
+                }
+            )
         }
     }
 }
