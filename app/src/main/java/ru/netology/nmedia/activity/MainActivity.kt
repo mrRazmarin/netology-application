@@ -1,7 +1,6 @@
 package ru.netology.nmedia.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -22,15 +21,14 @@ class MainActivity : AppCompatActivity() {
     private val editContract = registerForActivityResult(EditPostContract) { editResult ->
         postViewModel.save(editResult)
     }
+    val postContract = registerForActivityResult(NewPostContract) { result ->
+        postViewModel.save(result)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val mainBinding = ActivityMainBinding.inflate(layoutInflater)
-        val postContract = registerForActivityResult(NewPostContract) { result ->
-            postViewModel.save(result)
-        }
-
         val adapter = PostAdapter(createPostListener(postViewModel))
 
         setContentView(mainBinding.root)
@@ -44,14 +42,12 @@ class MainActivity : AppCompatActivity() {
 
         setupObserve(
             viewModel = postViewModel,
-            binding = mainBinding,
             adapter = adapter
         )
     }
 
     private fun setupObserve(
         viewModel: PostViewModel,
-        binding: ActivityMainBinding,
         adapter: PostAdapter
     ) {
         viewModel.data.observe(this) { posts ->
