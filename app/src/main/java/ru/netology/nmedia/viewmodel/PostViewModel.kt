@@ -2,7 +2,10 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepositoryFileImpl
 
@@ -14,6 +17,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val data = repository.getAll()
 
     val edited = MutableLiveData(emptyPost)
+    private val _postId = MutableLiveData(0L)
+    val loaded: LiveData<Post> = _postId.switchMap { id ->
+        if (id == 0L) {
+            MutableLiveData(emptyPost)
+        } else {
+            data.map { posts ->
+                posts.find { it.id == id } ?: emptyPost
+            }
+        }
+    }
 
     fun likeById(id: Long) = repository.likeById(id)
     @Deprecated("Не используется")
@@ -37,6 +50,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
             edited.value = emptyPost
         }
+    }
+
+    fun loadPost(id: Long) {
+        _postId.value = id
     }
 
     fun editPostById(post: Post) {

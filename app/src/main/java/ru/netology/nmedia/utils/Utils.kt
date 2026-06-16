@@ -1,16 +1,23 @@
 package ru.netology.nmedia.utils
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.adapter.PostListener
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.viewmodel.PostViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -94,6 +101,14 @@ object AndroidUtils {
                 this.preview.visibility = View.GONE
             }
 
+            this.headerTitle.setOnClickListener {
+                listener.onPostClick(post)
+            }
+
+            this.textAndVideo.setOnClickListener {
+                listener.onPostClick(post)
+            }
+
             this.preview.setOnClickListener {
                 listener.onVideo(post)
             }
@@ -153,6 +168,95 @@ object AndroidUtils {
                 originalPaddingBottom + systemBars.bottom
             )
             WindowInsetsCompat.CONSUMED
+        }
+    }
+
+    fun Fragment.createPostListener(postViewModel: PostViewModel): PostListener {
+        return object : PostListener {
+            override fun onLike(post: Post) {
+                postViewModel.likeById(post.id)
+            }
+
+            override fun onShare(post: Post) {
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "type/plain"
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                }
+
+                val chooser = Intent.createChooser(intent, getString(R.string.chooser_share_post))
+
+                startActivity(chooser)
+            }
+
+            override fun onView(post: Post) {
+                postViewModel.viewById(post.id)
+            }
+
+            override fun onRemove(post: Post) {
+                postViewModel.removePostById(post.id)
+            }
+
+            override fun onEdit(post: Post) {
+                postViewModel.editPostById(post)
+
+                // Проверка на каком мы сейчас экране, и в зависимости от экрана выполнять переход
+                val navController = findNavController()
+                when (navController.currentDestination?.id) {
+                    R.id.cardPost ->
+                        navController.navigate(R.id.action_cardPost_to_editPostFragment)
+                    else -> navController.navigate(R.id.action_feedFragment_to_editPostFragment)
+                }
+            }
+
+            override fun onPostClick(post: Post) {
+                val navController = findNavController()
+                // Защита от дальнейшего перехода, если уже "провалились" в Post
+                when(navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        postViewModel.loadPost(post.id)
+                        navController.navigate(R.id.action_feedFragment_to_cardPost)
+                    }
+                }
+            }
+
+            override fun onVideo(post: Post) {
+                val url = post.video
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    url.trim().toUri()
+                )
+                if (intent.resolveActivity(requireContext().packageManager) != null){
+                    Log.e("Check exists browser", "Browser exist!")
+                    startActivity(intent)
+                } else {
+                    Log.e("Check exists browser", "Browser not found!")
+                    Log.i("Field post.video", url)
+                }
+            }
+        }
+    }
+
+    fun Fragment.setupObserve(
+        viewModel: PostViewModel,
+        adapter: PostAdapter
+    ) {
+        viewModel.data.observe(viewLifecycleOwner) { posts ->
+            adapter.submitList(posts)
+        }
+    }
+
+    fun Fragment.setupSingleObserve(
+        viewModel: PostViewModel,
+        adapter: PostAdapter
+    ) {
+        viewModel.loaded.observe(viewLifecycleOwner) {
+            post ->
+            if (post.id == 0L) {
+                findNavController().navigateUp()
+            }else {
+                adapter.submitList(listOf(post))
+            }
         }
     }
 }

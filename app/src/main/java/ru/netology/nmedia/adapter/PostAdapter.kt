@@ -1,6 +1,5 @@
 package ru.netology.nmedia.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,6 +23,7 @@ interface PostListener{
     fun onRemove(post: Post)
     fun onEdit(post: Post)
     fun onVideo(post: Post)
+    fun onPostClick(post: Post)
 }
 
 /**
@@ -43,7 +43,6 @@ interface PostListener{
 class PostAdapter(
     private val postListener: PostListener
 ): ListAdapter<Post, PostViewHolder>(PostDiffUtilCallBack) {
-
     /**
     Этот метод вызывается, когда RecyclerView нужно создать новый элемент UI.
 
