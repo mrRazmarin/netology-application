@@ -6,13 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
+import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.repository.PostRepositoryFileImpl
+import ru.netology.nmedia.repository.PostRepositorySQLiteImpl
 
 private val emptyPost = Post()
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = PostRepositoryFileImpl(application)
+    private val repository = PostRepositorySQLiteImpl(
+        AppDb.getInstance(application).postDao
+    )
 
     val data = repository.getAll()
 

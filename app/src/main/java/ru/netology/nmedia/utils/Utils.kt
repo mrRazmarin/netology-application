@@ -189,13 +189,9 @@ object AndroidUtils {
                 startActivity(chooser)
             }
 
-            override fun onView(post: Post) {
-                postViewModel.viewById(post.id)
-            }
+            override fun onView(post: Post) = postViewModel.viewById(post.id)
 
-            override fun onRemove(post: Post) {
-                postViewModel.removePostById(post.id)
-            }
+            override fun onRemove(post: Post) = postViewModel.removePostById(post.id)
 
             override fun onEdit(post: Post) {
                 postViewModel.editPostById(post)
