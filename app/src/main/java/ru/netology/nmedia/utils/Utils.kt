@@ -178,6 +178,7 @@ object AndroidUtils {
             }
 
             override fun onShare(post: Post) {
+                postViewModel.shareById(post.id)
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     type = "type/plain"

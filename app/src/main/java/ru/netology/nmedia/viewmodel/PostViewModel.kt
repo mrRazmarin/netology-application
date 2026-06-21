@@ -32,7 +32,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long) = repository.likeById(id)
-    @Deprecated("Не используется")
+
     fun shareById(id: Long) = repository.shareById(id)
     fun viewById(id: Long) = repository.viewById(id)
     fun setEmptyPost() {
