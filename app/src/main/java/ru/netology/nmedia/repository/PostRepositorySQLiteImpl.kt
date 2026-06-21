@@ -33,6 +33,7 @@ class PostRepositorySQLiteImpl(private val dao: PostDao): PostRepository {
     }
 
     override fun shareById(id: Long) {
+        dao.shareById(id)
         posts = posts.map {
             if (it.id != id){
                 it

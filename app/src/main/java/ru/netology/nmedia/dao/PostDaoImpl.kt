@@ -15,7 +15,8 @@ class PostDaoImpl(private val db: SQLiteDatabase) : PostDao {
             ${PostColumns.COLUMN_CONTENT} TEXT NOT NULL,
             ${PostColumns.COLUMN_PUBLISHED} TEXT NOT NULL,
             ${PostColumns.COLUMN_LIKED_BY_ME} BOOLEAN NOT NULL DEFAULT 0,
-            ${PostColumns.COLUMN_LIKES} INTEGER NOT NULL DEFAULT 0
+            ${PostColumns.COLUMN_LIKES} INTEGER NOT NULL DEFAULT 0,
+            ${PostColumns.COLUMN_SHARE} INTEGER NOT NULL DEFAULT 0
         );
         """.trimIndent()
     }
@@ -28,13 +29,15 @@ class PostDaoImpl(private val db: SQLiteDatabase) : PostDao {
         const val COLUMN_PUBLISHED = "published"
         const val COLUMN_LIKED_BY_ME = "likedByMe"
         const val COLUMN_LIKES = "likes"
+        const val COLUMN_SHARE = "countShare"
         val ALL_COLUMNS = arrayOf(
             COLUMN_ID,
             COLUMN_AUTHOR,
             COLUMN_CONTENT,
             COLUMN_PUBLISHED,
             COLUMN_LIKED_BY_ME,
-            COLUMN_LIKES
+            COLUMN_LIKES,
+            COLUMN_SHARE
         )
     }
 
@@ -101,6 +104,16 @@ class PostDaoImpl(private val db: SQLiteDatabase) : PostDao {
         )
     }
 
+    override fun shareById(id: Long) {
+        db.execSQL(
+            """
+                UPDATE posts SET
+                countShare = countShare + 1
+                WHERE id = ?;
+            """.trimIndent(), arrayOf(id)
+        )
+    }
+
     override fun removeById(id: Long) {
         db.delete(
             PostColumns.TABLE,
@@ -117,7 +130,8 @@ class PostDaoImpl(private val db: SQLiteDatabase) : PostDao {
                 content = getString(getColumnIndexOrThrow(PostColumns.COLUMN_CONTENT)),
                 published = getString(getColumnIndexOrThrow(PostColumns.COLUMN_PUBLISHED)),
                 countLike = getInt(getColumnIndexOrThrow(PostColumns.COLUMN_LIKES)).toLong(),
-                likedByMe = getInt(getColumnIndexOrThrow(PostColumns.COLUMN_LIKED_BY_ME)) != 0
+                likedByMe = getInt(getColumnIndexOrThrow(PostColumns.COLUMN_LIKED_BY_ME)) != 0,
+                countShare = getString(getColumnIndexOrThrow(PostColumns.COLUMN_SHARE)).toLong()
             )
         }
     }
