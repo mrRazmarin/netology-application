@@ -178,6 +178,7 @@ object AndroidUtils {
             }
 
             override fun onShare(post: Post) {
+                postViewModel.shareById(post.id)
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     type = "type/plain"
@@ -189,13 +190,9 @@ object AndroidUtils {
                 startActivity(chooser)
             }
 
-            override fun onView(post: Post) {
-                postViewModel.viewById(post.id)
-            }
+            override fun onView(post: Post) = postViewModel.viewById(post.id)
 
-            override fun onRemove(post: Post) {
-                postViewModel.removePostById(post.id)
-            }
+            override fun onRemove(post: Post) = postViewModel.removePostById(post.id)
 
             override fun onEdit(post: Post) {
                 postViewModel.editPostById(post)
