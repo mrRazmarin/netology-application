@@ -49,6 +49,7 @@ class EditPostFragment : Fragment() {
             if (!text.isBlank()){
                 postViewModel.save(text)
             }
+            postViewModel.setEmptyPost()
             findNavController().navigateUp()
         }
 
