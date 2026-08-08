@@ -1,47 +1,25 @@
 package ru.netology.nmedia.repository
 
-import android.content.Intent
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import ru.netology.nmedia.R
+import androidx.lifecycle.map
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.utils.AndroidUtils.dateTimeNow
+import ru.netology.nmedia.entity.PostEntity
 
 class PostRepositorySQLiteImpl(private val dao: PostDao): PostRepository {
-    private var posts = emptyList<Post>()
-    private val data = MutableLiveData(posts)
+    override fun getAll(): LiveData<List<Post>> = dao.getAll().map { postEntities ->
+        postEntities.map {
+            it.toDto()
+        }
 
-    init {
-        posts = dao.getAll()
-        data.value = posts
     }
-
-    override fun getAll(): LiveData<List<Post>> = data
 
     override fun likeById(id: Long) {
         dao.likeById(id)
-        posts = posts.map {
-            if (it.id != id) it else it.copy(
-                likedByMe = !it.likedByMe,
-                countLike = if (it.likedByMe) it.countLike - 1 else it.countLike + 1
-            )
-        }
-        data.value = posts
     }
 
     override fun shareById(id: Long) {
         dao.shareById(id)
-        posts = posts.map {
-            if (it.id != id){
-                it
-            } else {
-                it.copy(countShare = it.countShare + 1)
-            }
-        }
-        data.value = posts
     }
 
     override fun viewById(id: Long) {
@@ -50,20 +28,9 @@ class PostRepositorySQLiteImpl(private val dao: PostDao): PostRepository {
 
     override fun removePostById(id: Long) {
         dao.removeById(id)
-        posts = posts.filter { it.id != id }
-        data.value = posts
     }
 
     override fun save(post: Post) {
-        val id = post.id
-        val saved = dao.save(post)
-        posts = if (id == 0L) {
-            listOf(saved) + posts
-        } else {
-            posts.map {
-                if (it.id != id) it else saved
-            }
-        }
-        data.value = posts
+        dao.save(PostEntity.toEntity(post))
     }
 }

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -13,6 +14,7 @@ android {
     defaultConfig {
         applicationId = "ru.netology.nmedia"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -39,7 +41,15 @@ android {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
+    implementation(libs.androidx.room3.runtime)
+    implementation(libs.androidx.room3.livedata)
+    ksp(libs.androidx.room3.compiler)
+
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.gson)
