@@ -1,5 +1,6 @@
 [versions]
-agp = "9.2.1"
+agp = "9.3.1"
+firebaseBom = "34.17.0"
 ksp = "2.3.6"
 coreKtx = "1.18.0"
 junit = "4.13.2"
@@ -19,6 +20,8 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "roomVersion" }
 androidx-room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "roomVersion" }
 androidx-room3-livedata = { module = "androidx.room3:room3-livedata", version.ref = "roomVersion" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

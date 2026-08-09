@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.ksp)
+    id("com.google.gms.google-services") version "4.5.0"
 }
 
 android {
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.androidx.room3.runtime)
     implementation(libs.androidx.room3.livedata)
     ksp(libs.androidx.room3.compiler)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
