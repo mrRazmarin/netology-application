@@ -7,6 +7,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -105,10 +106,15 @@ class FCMService : FirebaseMessagingService() {
      * ```gson.fromJson(..., Like::class.java)``` — берёт JSON из content, и превращает его в объект типа Like.
      */
     override fun onMessageReceived(message: RemoteMessage) {
-        when (Actions.valueOf(message.data[ACTION_KEY].orEmpty())) {
-            Actions.LIKE -> handleLike(
-                gson.fromJson(message.data[CONTENT_KEY], Like::class.java)
-            )
+        //println(message)
+        try {
+            when (Actions.valueOf(message.data[ACTION_KEY].orEmpty())) {
+                Actions.LIKE -> handleLike(
+                    gson.fromJson(message.data[CONTENT_KEY], Like::class.java)
+                )
+            }
+        }catch (e: Exception) {
+            Log.e("exceptions",e.stackTraceToString())
         }
     }
 
